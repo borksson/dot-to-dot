@@ -5,13 +5,12 @@
 # Import required libraries
 import numpy as np
 import cv2
+from ImgResize import *
+from ShowImage import *
 #Define image path
 inImage = "_assets/dot-to-dot-shapes-39.png" #Path
 # Define showImage
-def showImage(img):
-    cv2.imshow('image',img)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+
 # Load in color image in grayscale
 img = cv2.imread(inImage,0)
 # Creates an images with thresed values
