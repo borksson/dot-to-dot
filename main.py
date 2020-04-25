@@ -6,7 +6,7 @@
 import numpy as np
 import cv2
 #Define image path
-inImage = "" #Path
+inImage = "_assets/dot-to-dot-shapes-39.png" #Path
 # Define showImage
 def showImage(img):
     cv2.imshow('image',img)
