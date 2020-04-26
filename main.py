@@ -7,6 +7,9 @@ import numpy as np
 import cv2
 from ImgResize import *
 from ShowImage import *
+import pytesseract
+
+pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 #IDENTIFY CIRCLES
 
@@ -58,12 +61,12 @@ for i in circles[0,:]:
     test=np.ones_like(img)
     cv2.rectangle(test,((x-r),(y-r-h)),((x+r+w),(y+r)),(255,255,255),-1)
     oRoi=cv2.bitwise_and(test,img)
-    showImage(oRoi)
+    #showImage(oRoi)
     #Num1
     test=np.ones_like(img)
     cv2.rectangle(test,((x-r+10),(y-r-h)),((x+r+w-8),(y+r)),(255,255,255),-1)
     roi=cv2.bitwise_and(test,img)
-    showImage(roi)
+    #showImage(roi)
     splitMasks.append(roi)
     #Num2
     test=np.ones_like(img)
@@ -71,7 +74,7 @@ for i in circles[0,:]:
     roi=cv2.bitwise_and(test,img)
     if np.mean(roi) != 255:
         print('Not all white')
-        showImage(roi)
+        #showImage(roi)
         splitMasks.append(roi)
     masks.append([oRoi,splitMasks])
 
@@ -83,16 +86,12 @@ masks[0] = [masks[0],[]]
 splitMasks = masks[0][1]
 test=np.ones_like(img)
 cv2.rectangle(test,((x-r+10),(y-r-h)),((x+r+w-8),(y+r)),(255,255,255),-1)
-roi=cv2.bitwise_and(test,img)
-showImage(roi)
+#showImage(roi)
 test=np.ones_like(img)
 cv2.rectangle(test,((x-r+18),(y-r-h)),((x+r+w),(y+r)),(255,255,255),-1)
 roi=cv2.bitwise_and(test,img)
-showImage(roi)
+#showImage(roi)
 
-#Train dataset
-from sklearn import svm
-clf = svm.SVC()
- 
-#clf.fit(x, y)
-#clf.predict([[x_test,y_test]])
+#OCR
+img_rgb = cv2.cvtColor(roi, cv2.COLOR_BGR2RGB)
+print(pytesseract.image_to_string(img_rgb))
