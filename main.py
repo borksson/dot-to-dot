@@ -52,16 +52,47 @@ w = 17
 h = 10
 for i in circles[0,:]:
     x,y,r = int(i[0]),int(i[1]),int(i[2])
+    splitMasks = []
+    #FIXME: Crop instead of off image
+    #Main mask
     test=np.ones_like(img)
     cv2.rectangle(test,((x-r),(y-r-h)),((x+r+w),(y+r)),(255,255,255),-1)
-    #apply mask
+    oRoi=cv2.bitwise_and(test,img)
+    showImage(oRoi)
+    #Num1
+    test=np.ones_like(img)
+    cv2.rectangle(test,((x-r+10),(y-r-h)),((x+r+w-8),(y+r)),(255,255,255),-1)
     roi=cv2.bitwise_and(test,img)
-    masks.append(roi)
-for i in masks:
-    if i is masks[0]:
-        masterRois = i
-    else:
-        masterRois = cv2.add(masterRois, i)
-showImage(masterRois)
+    showImage(roi)
+    splitMasks.append(roi)
+    #Num2
+    test=np.ones_like(img)
+    cv2.rectangle(test,((x-r+18),(y-r-h)),((x+r+w),(y+r)),(255,255,255),-1)
+    roi=cv2.bitwise_and(test,img)
+    if np.mean(roi) != 255:
+        print('Not all white')
+        showImage(roi)
+        splitMasks.append(roi)
+    masks.append([oRoi,splitMasks])
+
+#Seperate numbers
+showImage(masks[0][0])
+i = circles[0][0]
+x,y,r = int(i[0]),int(i[1]),int(i[2])
+masks[0] = [masks[0],[]]
+splitMasks = masks[0][1]
+test=np.ones_like(img)
+cv2.rectangle(test,((x-r+10),(y-r-h)),((x+r+w-8),(y+r)),(255,255,255),-1)
+roi=cv2.bitwise_and(test,img)
+showImage(roi)
+test=np.ones_like(img)
+cv2.rectangle(test,((x-r+18),(y-r-h)),((x+r+w),(y+r)),(255,255,255),-1)
+roi=cv2.bitwise_and(test,img)
+showImage(roi)
 
 #Train dataset
+from sklearn import svm
+clf = svm.SVC()
+ 
+#clf.fit(x, y)
+#clf.predict([[x_test,y_test]])
